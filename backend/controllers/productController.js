@@ -1,4 +1,5 @@
 const Product = require('../models/productModel');
+const ApiFeatures = require('../utils/apiFeatures');
 const ErrorHandler = require('../utils/errorHandler');
 
 // Create a new product -- Admin
@@ -12,8 +13,18 @@ exports.createProduct = async (req, res, next) => {
 
 // Get All Products
 exports.getAllProducts = async (req, res) => {
-    const products = await Product.find();
-    res.status(200).json({ message: "success", products })
+
+    const resultPerPage = 5;
+    const productCount = await Product.countDocuments();
+
+    const apiFeatures = new ApiFeatures(Product.find(), req.query)
+        .search()
+        .filter()
+        .pagination(resultPerPage);
+
+    const products = await apiFeatures.query;
+
+    res.status(200).json({ message: "success", products, productCount });
 }
 
 // Update a product -- Admin
