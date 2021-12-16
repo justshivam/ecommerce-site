@@ -1,32 +1,24 @@
 const mongoose = require("mongoose");
 
-const MAX_PRICE_FIGURES = 8;
-const MAX_STOCK_FIGURES = 8;
-
-const productSchema = new mongoose.Schema({
-
+const productSchema = mongoose.Schema({
     name: {
         type: String,
-        required: [true, "Please Enter Product Name"],
+        required: [true, "Please Enter product Name"],
         trim: true,
     },
-
     description: {
         type: String,
-        required: [true, "Please Enter Product Description"],
+        required: [true, "Please Enter product Description"],
     },
-
     price: {
         type: Number,
-        required: [true, "Please Enter Product Price"],
-        maxLength: [MAX_PRICE_FIGURES, `Price Cannot Exceed ${MAX_PRICE_FIGURES} Figures`],
+        required: [true, "Please Enter product Price"],
+        maxLength: [8, "Price cannot exceed 8 characters"],
     },
-
-    rating: {
+    ratings: {
         type: Number,
         default: 0,
     },
-
     images: [
         {
             public_id: {
@@ -39,26 +31,27 @@ const productSchema = new mongoose.Schema({
             },
         },
     ],
-
     category: {
         type: String,
         required: [true, "Please Enter Product Category"],
     },
-
-    stock: {
+    Stock: {
         type: Number,
-        required: [true, "Please Enter Product Stock"],
-        maxLength: [MAX_STOCK_FIGURES, `Stock Cannot Exceed ${MAX_STOCK_FIGURES} Figures`],
-        default: 1
+        required: [true, "Please Enter product Stock"],
+        maxLength: [4, "Stock cannot exceed 4 characters"],
+        default: 1,
     },
-
-    numberOfReviews: {
+    numOfReviews: {
         type: Number,
         default: 0,
     },
-
     reviews: [
         {
+            user: {
+                type: mongoose.Schema.ObjectId,
+                ref: "User",
+                required: true,
+            },
             name: {
                 type: String,
                 required: true,
@@ -79,13 +72,10 @@ const productSchema = new mongoose.Schema({
         ref: "User",
         required: true,
     },
-
     createdAt: {
         type: Date,
         default: Date.now,
     },
-
-
 });
 
 module.exports = mongoose.model("Product", productSchema);
